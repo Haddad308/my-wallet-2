@@ -86,12 +86,16 @@ export function SavingsForm({ onSavingsAdded }: SavingsFormProps) {
     setIsLoading(true);
 
     try {
-      const entryData = {
+      const entryData: any = {
         assetType,
         usdAmount: assetType === "currency" ? Number.parseFloat(usdAmount) : 0,
         goldGrams: assetType === "gold" ? Number.parseFloat(goldGrams) : 0,
-        goldKarat: assetType === "gold" ? goldKarat : undefined,
       };
+
+      // Only include goldKarat if it's a gold entry
+      if (assetType === "gold") {
+        entryData.goldKarat = goldKarat;
+      }
 
       const entryId = await addSavingsEntry(entryData);
 

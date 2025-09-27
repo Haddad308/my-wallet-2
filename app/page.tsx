@@ -25,9 +25,7 @@ export default function HomePage() {
   } = useExchangeRates();
 
   const loadEntries = async () => {
-    console.log("[v0] Loading entries from Firestore");
     const data = await loadSavingsEntries();
-    console.log("[v0] Loaded entries:", data);
     setEntries(data);
   };
 
@@ -36,7 +34,7 @@ export default function HomePage() {
   }, [refreshTrigger]);
 
   const handleSavingsAdded = () => {
-    console.log("[v0] Savings added, refreshing...");
+    ("[v0] Savings added, refreshing...");
     setRefreshTrigger(prev => prev + 1);
   };
 
@@ -48,8 +46,6 @@ export default function HomePage() {
         totalValueInEgp: 0,
         breakdown: [],
       };
-
-  console.log("[v0] Current calculation:", calculation);
 
   return (
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem>

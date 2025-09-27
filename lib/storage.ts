@@ -17,12 +17,10 @@ export async function saveSavingsEntries(
   entries: SavingsEntry[]
 ): Promise<void> {
   // This function is no longer needed with Firestore, but kept for compatibility
-  console.log("[v0] saveSavingsEntries called but not needed with Firestore");
 }
 
 export async function loadSavingsEntries(): Promise<SavingsEntry[]> {
   try {
-    console.log("[v0] Loading savings entries from Firestore");
     const q = query(
       collection(db, COLLECTION_NAME),
       orderBy("createdAt", "desc")
@@ -43,10 +41,8 @@ export async function loadSavingsEntries(): Promise<SavingsEntry[]> {
       });
     });
 
-    console.log("[v0] Loaded entries from Firestore:", entries);
     return entries;
   } catch (error) {
-    console.error("[v0] Error loading from Firestore:", error);
     // Fallback to localStorage if Firestore fails
     return loadSavingsEntriesLocal();
   }
@@ -56,29 +52,45 @@ export async function addSavingsEntryFirestore(
   entry: Omit<SavingsEntry, "id" | "createdAt" | "updatedAt">
 ): Promise<string> {
   try {
-    console.log("[v0] Adding savings entry to Firestore:", entry);
+    // Validate entry data before sending to Firebase
+    if (entry.assetType === "currency" && entry.usdAmount <= 0) {
+      throw new Error("USD amount must be greater than 0");
+    }
+    if (entry.assetType === "gold" && entry.goldGrams <= 0) {
+      throw new Error("Gold amount must be greater than 0");
+    }
+
     const docRef = await addDoc(collection(db, COLLECTION_NAME), {
       ...entry,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
 
-    console.log("[v0] Entry added to Firestore with ID:", docRef.id);
     return docRef.id;
-  } catch (error) {
-    console.error("[v0] Error adding to Firestore:", error);
-    // Fallback to localStorage if Firestore fails
-    return addSavingsEntryLocal(entry);
+  } catch (error: any) {
+    // Try localStorage as fallback for certain errors
+    if (error.code === "permission-denied" || error.code === "unavailable") {
+      const localId = addSavingsEntryLocal(entry);
+      throw new Error(
+        "Data saved locally (Firebase unavailable). Your data is safe but not synced to cloud."
+      );
+    }
+
+    // Provide more specific error messages for other errors
+    if (error.code === "unauthenticated") {
+      throw new Error("Authentication required: Please sign in");
+    } else {
+      throw new Error(
+        `Firebase error: ${error.message || "Unknown error occurred"}`
+      );
+    }
   }
 }
 
 export async function deleteSavingsEntryFirestore(id: string): Promise<void> {
   try {
-    console.log("[v0] Deleting entry from Firestore:", id);
     await deleteDoc(doc(db, COLLECTION_NAME, id));
-    console.log("[v0] Entry deleted from Firestore");
   } catch (error) {
-    console.error("[v0] Error deleting from Firestore:", error);
     // Fallback to localStorage if Firestore fails
     deleteSavingsEntryLocal(id);
   }

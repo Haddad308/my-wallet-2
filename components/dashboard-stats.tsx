@@ -1,17 +1,24 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { formatEgpCurrency } from "@/lib/calculations"
-import type { ExchangeRates } from "@/lib/types"
-import { TrendingUp, TrendingDown, DollarSign, Coins, Activity, BarChart3 } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { formatEgpCurrency } from "@/lib/calculations";
+import type { ExchangeRates } from "@/lib/types";
+import {
+  TrendingUp,
+  TrendingDown,
+  DollarSign,
+  Coins,
+  Activity,
+  BarChart3,
+} from "lucide-react";
 
 interface DashboardStatsProps {
-  totalValueInEgp: number
-  totalUsdInEgp: number
-  totalGoldInEgp: number
-  rates: ExchangeRates
-  isLoading?: boolean
+  totalValueInEgp: number;
+  totalUsdInEgp: number;
+  totalGoldInEgp: number;
+  rates: ExchangeRates | null;
+  isLoading?: boolean;
 }
 
 export function DashboardStats({
@@ -21,15 +28,19 @@ export function DashboardStats({
   rates,
   isLoading = false,
 }: DashboardStatsProps) {
-  const goldChangePercentage = rates ? ((rates.goldPricePerGram - 5800) / 5800) * 100 : 0 // Assuming baseline of 5800 EGP
+  const goldChangePercentage = rates
+    ? ((rates.goldPricePerGram - 5800) / 5800) * 100
+    : 0; // Assuming baseline of 5800 EGP
 
-  const usdChangePercentage = rates ? ((rates.usdToEgp - 48) / 48) * 100 : 0 // Assuming baseline of 48 EGP
+  const usdChangePercentage = rates ? ((rates.usdToEgp - 48) / 48) * 100 : 0; // Assuming baseline of 48 EGP
 
   if (isLoading) {
     return (
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         {[...Array(4)].map((_, i) => (
-          <Card key={i} className="border-0 shadow-sm bg-gradient-to-br from-card to-card/50">
+          <Card
+            key={i}
+            className="border-0 shadow-sm bg-gradient-to-br from-card to-card/50">
             <CardContent className="p-6">
               <div className="animate-pulse">
                 <div className="h-4 bg-muted rounded-lg w-3/4 mb-3"></div>
@@ -39,7 +50,7 @@ export function DashboardStats({
           </Card>
         ))}
       </div>
-    )
+    );
   }
 
   return (
@@ -55,8 +66,12 @@ export function DashboardStats({
           </div>
         </CardHeader>
         <CardContent className="relative">
-          <div className="text-3xl font-bold text-foreground mb-1">{formatEgpCurrency(totalValueInEgp)}</div>
-          <p className="text-xs text-muted-foreground font-medium">Combined USD + Gold holdings</p>
+          <div className="text-3xl font-bold text-foreground mb-1">
+            {formatEgpCurrency(totalValueInEgp)}
+          </div>
+          <p className="text-xs text-muted-foreground font-medium">
+            Combined USD + Gold holdings
+          </p>
         </CardContent>
       </Card>
 
@@ -70,7 +85,9 @@ export function DashboardStats({
           </div>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold text-foreground mb-2">{formatEgpCurrency(totalUsdInEgp)}</div>
+          <div className="text-2xl font-bold text-foreground mb-2">
+            {formatEgpCurrency(totalUsdInEgp)}
+          </div>
           <div className="flex items-center space-x-2">
             {usdChangePercentage >= 0 ? (
               <TrendingUp className="h-3 w-3 text-green-500" />
@@ -79,8 +96,7 @@ export function DashboardStats({
             )}
             <Badge
               variant={usdChangePercentage >= 0 ? "default" : "destructive"}
-              className="text-xs font-medium px-2 py-0.5"
-            >
+              className="text-xs font-medium px-2 py-0.5">
               {usdChangePercentage >= 0 ? "+" : ""}
               {usdChangePercentage.toFixed(2)}%
             </Badge>
@@ -98,7 +114,9 @@ export function DashboardStats({
           </div>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold text-foreground mb-2">{formatEgpCurrency(totalGoldInEgp)}</div>
+          <div className="text-2xl font-bold text-foreground mb-2">
+            {formatEgpCurrency(totalGoldInEgp)}
+          </div>
           <div className="flex items-center space-x-2">
             {goldChangePercentage >= 0 ? (
               <TrendingUp className="h-3 w-3 text-green-500" />
@@ -107,8 +125,7 @@ export function DashboardStats({
             )}
             <Badge
               variant={goldChangePercentage >= 0 ? "default" : "destructive"}
-              className="text-xs font-medium px-2 py-0.5"
-            >
+              className="text-xs font-medium px-2 py-0.5">
               {goldChangePercentage >= 0 ? "+" : ""}
               {goldChangePercentage.toFixed(2)}%
             </Badge>
@@ -128,16 +145,24 @@ export function DashboardStats({
         <CardContent>
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-sm font-medium text-muted-foreground">USD/EGP</span>
-              <span className="text-sm font-bold text-foreground">{rates?.usdToEgp.toFixed(2)}</span>
+              <span className="text-sm font-medium text-muted-foreground">
+                USD/EGP
+              </span>
+              <span className="text-sm font-bold text-foreground">
+                {rates?.usdToEgp.toFixed(2)}
+              </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm font-medium text-muted-foreground">Gold/g</span>
-              <span className="text-sm font-bold text-foreground">{rates?.goldPricePerGram.toFixed(0)}</span>
+              <span className="text-sm font-medium text-muted-foreground">
+                Gold/g
+              </span>
+              <span className="text-sm font-bold text-foreground">
+                {rates?.goldPricePerGram.toFixed(0)}
+              </span>
             </div>
           </div>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

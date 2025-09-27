@@ -1,40 +1,42 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import type { ExchangeRates } from "@/lib/types"
+import { useState, useEffect } from "react";
+import type { ExchangeRates } from "@/lib/types";
 
 export function useExchangeRates() {
-  const [rates, setRates] = useState<ExchangeRates | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [rates, setRates] = useState<ExchangeRates | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchRates = async () => {
     try {
-      setIsLoading(true)
-      setError(null)
+      setIsLoading(true);
+      setError(null);
 
-      const response = await fetch("/api/rates")
+      const response = await fetch("/api/rates");
+
       if (!response.ok) {
-        throw new Error("Failed to fetch rates")
+        throw new Error("Failed to fetch rates");
       }
 
-      const data = await response.json()
-      setRates(data)
+      const data = await response.json();
+
+      setRates(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unknown error")
+      setError(err instanceof Error ? err.message : "Unknown error");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchRates()
+    fetchRates();
 
     // Refresh rates every 5 minutes
-    const interval = setInterval(fetchRates, 5 * 60 * 1000)
+    const interval = setInterval(fetchRates, 5 * 60 * 1000);
 
-    return () => clearInterval(interval)
-  }, [])
+    return () => clearInterval(interval);
+  }, []);
 
-  return { rates, isLoading, error, refetch: fetchRates }
+  return { rates, isLoading, error, refetch: fetchRates };
 }

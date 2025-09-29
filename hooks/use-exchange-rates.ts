@@ -16,9 +16,9 @@ export function useExchangeRates() {
       // Add cache-busting query parameter and headers
       const timestamp = new Date().getTime();
       const response = await fetch(`/api/rates?t=${timestamp}`, {
-        cache: 'no-store',
+        cache: "no-store",
         headers: {
-          'Cache-Control': 'no-cache',
+          "Cache-Control": "no-cache",
         },
       });
 

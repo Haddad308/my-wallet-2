@@ -13,7 +13,14 @@ export function useExchangeRates() {
       setIsLoading(true);
       setError(null);
 
-      const response = await fetch("/api/rates");
+      // Add cache-busting query parameter and headers
+      const timestamp = new Date().getTime();
+      const response = await fetch(`/api/rates?t=${timestamp}`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache',
+        },
+      });
 
       if (!response.ok) {
         throw new Error("Failed to fetch rates");

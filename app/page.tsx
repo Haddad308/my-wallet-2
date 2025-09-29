@@ -35,7 +35,7 @@ export default function HomePage() {
 
   const handleSavingsAdded = () => {
     ("[v0] Savings added, refreshing...");
-    setRefreshTrigger(prev => prev + 1);
+    setRefreshTrigger((prev) => prev + 1);
   };
 
   const calculation = rates

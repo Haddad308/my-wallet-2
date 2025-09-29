@@ -10,7 +10,9 @@ export async function fetchExchangeRates(): Promise<ExchangeRates> {
       method: "GET",
       headers: {
         "x-api-key": API_KEY,
+        "Cache-Control": "no-cache",
       },
+      cache: "no-store",
     });
 
     if (!response.ok) {
